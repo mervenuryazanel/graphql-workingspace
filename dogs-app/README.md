@@ -1,6 +1,11 @@
 # Apollo Client Graphql Document Exercises
 
-You can find the original app and the docs in this link: https://www.apollographql.com/docs/react/data/queries
+## App Appearance
+
+![Screenshot from 2023-07-16 15-39-18](https://github.com/mervenuryazanel/graphql-workingspace/assets/54467555/1830fbf9-1169-4952-a0d3-552b720e2cd6)
+
+
+> You can find the original app and the docs in this link: https://www.apollographql.com/docs/react/data/queries
 
 ## Available Scripts
 
