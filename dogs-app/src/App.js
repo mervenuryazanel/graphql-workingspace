@@ -1,5 +1,5 @@
 import { useQuery, gql } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
 
@@ -65,9 +65,26 @@ query Dog($breed:String!){
 }`;
 
 function DogPhoto({ breed }) {
-  const { loading, error, data } = useQuery(GET_DOG_PHOTO, {
+  const { loading, error, data, startPolling, stopPolling, } = useQuery(GET_DOG_PHOTO, {
     variables: { breed }, // "variables" is an object that contains all of the variables that our query needs
+    pollInterval: 5000, // "pollInterval" is the time interval (in milliseconds) on how often we want to execute the our query (in this case, every 5 seconds). 
+    // It provides a near- real - time sychronization between the client and the server.
   });
+
+  const [pollingCount, setPollingCount] = useState(0);
+
+  // Another way of the polling is to use the "startPolling" and "stopPolling" functions ↓↓↓
+  // useEffect(() => {
+  //   startPolling(5000); // "startPolling" is a function that starts polling the server with the given interval (in this case every 5 seconds)
+
+  //   setTimeout(
+  //     () => {
+  //       stopPolling(); // "stopPolling" is a function that stops polling the server
+  //       console.log("polling is stopped");
+  //     },
+  //     15000
+  //   );
+  // }, [breed]);
 
   if (loading) return `The related photo of ${breed} is loading...`;
   if (error) return `Error ${error.message}`;
