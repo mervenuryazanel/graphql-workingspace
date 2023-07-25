@@ -1,4 +1,4 @@
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, NetworkStatus } from "@apollo/client";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -65,36 +65,35 @@ query Dog($breed:String!){
 }`;
 
 function DogPhoto({ breed }) {
-  const { loading, error, data, startPolling, stopPolling, } = useQuery(GET_DOG_PHOTO, {
+  const { loading, error, data, refetch, networkStatus } = useQuery(GET_DOG_PHOTO, {
     variables: { breed }, // "variables" is an object that contains all of the variables that our query needs
-    pollInterval: 5000, // "pollInterval" is the time interval (in milliseconds) on how often we want to execute the our query (in this case, every 5 seconds). 
-    // It provides a near- real - time sychronization between the client and the server.
+    notifyOnNetworkStatusChange: true, //this will make the loading state to be true when we refetch the query
   });
 
-  const [pollingCount, setPollingCount] = useState(0);
-
-  // Another way of the polling is to use the "startPolling" and "stopPolling" functions ↓↓↓
-  // useEffect(() => {
-  //   startPolling(5000); // "startPolling" is a function that starts polling the server with the given interval (in this case every 5 seconds)
-
-  //   setTimeout(
-  //     () => {
-  //       stopPolling(); // "stopPolling" is a function that stops polling the server
-  //       console.log("polling is stopped");
-  //     },
-  //     15000
-  //   );
-  // }, [breed]);
-
+  if (networkStatus === NetworkStatus.refetch) return "Refetching!"; //this is a way to show the loading state when we refetch the query (we can also use the "notifyOnNetworkStatusChange" option
   if (loading) return `The related photo of ${breed} is loading...`;
   if (error) return `Error ${error.message}`;
 
   return (
-    <img
-      src={data.dog.displayImage}
-      style={{ height: 100, width: 100 }}
+    <div style={{ display: "flex", flexDirection: "column" }}>
 
-    />
+      <img
+        src={data.dog.displayImage}
+        style={{ height: 100, width: 100 }}
+
+      />
+
+      {/* //We can provide variable inside the refetch function but if we dont the query uses the last variables that we passed in */}
+      <button
+        onClick={() => refetch()}
+        style={{ width: "100" }}
+      >
+        Refetch dog!
+      </button>
+      {/* <button onClick={() => refetch({breed:"dalmatian"})}>Refetch only dalmatian!</button>  */}
+
+
+    </div>
   )
 };
 
